@@ -19,6 +19,24 @@ import { filterTrains, formatKarachiClock, getKarachiTimeParts } from "./utils/s
 const BONUS_LINK =
   "https://www.profitablecpmratenetwork.com/j9f627innq?key=be46e17df9e34aa3b5b8e77e88a34740";
 
+const sitePages = [
+  {
+    title: "Pakistan Train Schedule Guide",
+    description: "A dedicated page explaining how to read the timetable windows and compare long-distance runs.",
+    href: "/train-schedule-guide.html",
+  },
+  {
+    title: "Major Station Guide",
+    description: "A clean station page focused on Lahore, Karachi, and Rawalpindi planning context.",
+    href: "/pakistan-station-guide.html",
+  },
+  {
+    title: "Rail Travel FAQ",
+    description: "A standalone FAQ page for schedule accuracy, route windows, and trip planning basics.",
+    href: "/rail-travel-faq.html",
+  },
+];
+
 export default function App() {
   const [search, setSearch] = useState("");
   const [origin, setOrigin] = useState("");
@@ -170,6 +188,23 @@ export default function App() {
           <FareSection fares={fareHighlights} />
           <GuideSection />
           <FAQSection />
+          <section className="surface-card section-card" aria-labelledby="site-pages-title">
+            <h2 id="site-pages-title" className="section-title">
+              Internal site pages
+            </h2>
+            <p className="section-copy">
+              These are dedicated internal pages on this site, not external links. They expand the
+              schedule tool with focused guides for routes, stations, and common planning questions.
+            </p>
+            <div className="link-grid" style={{ marginTop: 18 }}>
+              {sitePages.map((page) => (
+                <a key={page.href} href={page.href} className="link-card">
+                  <h3>{page.title}</h3>
+                  <p>{page.description}</p>
+                </a>
+              ))}
+            </div>
+          </section>
           <RelatedLinks />
         </div>
       </main>
