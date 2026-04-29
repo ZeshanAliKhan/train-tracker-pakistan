@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { FAQSection } from "./components/FAQSection";
 import { FareSection } from "./components/FareSection";
 import { GuideSection } from "./components/GuideSection";
@@ -21,18 +21,33 @@ const BONUS_LINK =
 
 const sitePages = [
   {
-    title: "Pakistan Train Schedule Guide",
-    description: "A dedicated page explaining how to read the timetable windows and compare long-distance runs.",
+    title: "Schedule Guide",
+    description: "How to read departures, overnight arrivals, and timetable windows.",
     href: "/train-schedule-guide.html",
   },
   {
-    title: "Major Station Guide",
-    description: "A clean station page focused on Lahore, Karachi, and Rawalpindi planning context.",
+    title: "Station Guide",
+    description: "Key planning notes for Lahore, Karachi, and Rawalpindi rail hubs.",
     href: "/pakistan-station-guide.html",
   },
   {
-    title: "Rail Travel FAQ",
-    description: "A standalone FAQ page for schedule accuracy, route windows, and trip planning basics.",
+    title: "Booking Guide",
+    description: "A practical page for reservation timing, classes, and booking checks.",
+    href: "/train-booking-guide.html",
+  },
+  {
+    title: "Fare Guide",
+    description: "A cleaner view of route examples, classes, and trip budgeting.",
+    href: "/pakistan-train-fare-guide.html",
+  },
+  {
+    title: "Popular Routes",
+    description: "A corridor page for Karachi, Lahore, Islamabad, Rawalpindi, Multan, and Quetta runs.",
+    href: "/popular-pakistan-train-routes.html",
+  },
+  {
+    title: "Rail FAQ",
+    description: "Common route-planning and schedule-interpretation questions in one page.",
     href: "/rail-travel-faq.html",
   },
 ];
@@ -46,10 +61,31 @@ export default function App() {
   const [clockLabel, setClockLabel] = useState(() => formatKarachiClock(getKarachiTimeParts()));
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const initialQuery = params.get("q");
+    if (initialQuery) {
+      setSearch(initialQuery);
+    }
+  }, []);
+
+  useEffect(() => {
     const update = () => setClockLabel(formatKarachiClock(getKarachiTimeParts()));
     const timer = window.setInterval(update, 60000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (search.trim()) {
+      params.set("q", search.trim());
+    } else {
+      params.delete("q");
+    }
+
+    const nextQuery = params.toString();
+    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}`;
+    window.history.replaceState({}, "", nextUrl);
+  }, [search]);
 
   const origins = useMemo(
     () => [...new Set(trainSchedules.map((train) => train.origin))].sort(),
@@ -89,22 +125,56 @@ export default function App() {
     setCorridor("");
   };
 
+  const handleHeaderSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    document.getElementById("tracker-tool-heading")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="page-shell">
       <header className="site-header">
-        <div className="container header-inner">
-          <div className="brand-block">
-            <div className="brand-badge" aria-hidden="true">
-              🚆
+        <div className="container header-stack">
+          <div className="header-inner">
+            <div className="brand-block">
+              <div className="brand-badge" aria-hidden="true">
+                🚆
+              </div>
+              <div className="brand-copy">
+                <h1>Train Tracker Pakistan</h1>
+                <p>Pakistan Railways timetable explorer with route, station, fare, and planning pages.</p>
+              </div>
             </div>
-            <div className="brand-copy">
-              <h1>Train Tracker Pakistan</h1>
-              <p>Published Pakistan Railways timetable explorer with route, fare, and station context.</p>
-            </div>
+            <a href={BONUS_LINK} target="_blank" rel="noopener noreferrer" className="bonus-link">
+              Bonus Link
+            </a>
           </div>
-          <a href={BONUS_LINK} target="_blank" rel="noopener noreferrer" className="bonus-link">
-            Bonus Link
-          </a>
+
+          <div className="nav-bar">
+            <nav className="nav-links" aria-label="Site pages">
+              <a className="nav-link" href="/">
+                Home
+              </a>
+              {sitePages.map((page) => (
+                <a key={page.href} className="nav-link" href={page.href}>
+                  {page.title}
+                </a>
+              ))}
+            </nav>
+
+            <form className="header-search" onSubmit={handleHeaderSearchSubmit}>
+              <label htmlFor="header-train-search" className="sr-only">
+                Search trains or cities
+              </label>
+              <input
+                id="header-train-search"
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search trains, cities, or route codes"
+              />
+              <button type="submit">Search</button>
+            </form>
+          </div>
         </div>
       </header>
 
@@ -133,8 +203,8 @@ export default function App() {
                 <div>
                   <h2 id="results-title">Today&apos;s timetable windows</h2>
                   <p>
-                    Use the cards below to compare the next scheduled departures without scrolling
-                    into long text first.
+                    Search in the header or inside the main tool, then compare the next published
+                    departures without scrolling through unrelated content first.
                   </p>
                 </div>
                 <div className="chip-row">
@@ -166,12 +236,12 @@ export default function App() {
 
         <div className="section-stack">
           <section className="surface-card section-card">
-            <h2 className="section-title">Why this version is better than the old mock tracker</h2>
+            <h2 className="section-title">Why this train topic cluster works better now</h2>
             <p className="section-copy">
-              The previous build mixed fabricated delays, broken component contracts, and hard-coded
-              route details. This version uses a verified timetable snapshot, keeps the tool above
-              the fold on mobile, and makes the limitations explicit so the schedule remains useful
-              without pretending to be a private realtime railway feed.
+              Instead of one thin tool page, the site now has a schedule search surface, route
+              context, station notes, fare guidance, booking guidance, and dedicated rail FAQ pages.
+              That gives users multiple entry points and gives search engines a clearer site
+              structure around the Pakistan train planning topic.
             </p>
             <div className="helper-row">
               <p className="source-note">
@@ -193,8 +263,8 @@ export default function App() {
               Internal site pages
             </h2>
             <p className="section-copy">
-              These are dedicated internal pages on this site, not external links. They expand the
-              schedule tool with focused guides for routes, stations, and common planning questions.
+              These are dedicated internal pages on this site. They cover schedule reading, station
+              planning, ticket booking basics, route comparisons, fares, and common rail questions.
             </p>
             <div className="link-grid" style={{ marginTop: 18 }}>
               {sitePages.map((page) => (

@@ -20,12 +20,23 @@ a {
 }
 
 .container {
-  width: min(1040px, calc(100% - 32px));
+  width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
 }
 
 .header {
-  padding: 20px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgba(15, 118, 110, 0.14);
+  background: rgba(244, 247, 246, 0.95);
+  backdrop-filter: blur(12px);
+}
+
+.header-stack {
+  display: grid;
+  gap: 12px;
+  padding: 16px 0;
 }
 
 .header-bar {
@@ -33,7 +44,6 @@ a {
   justify-content: space-between;
   align-items: center;
   gap: 14px;
-  padding: 16px 0;
 }
 
 .brand {
@@ -74,6 +84,65 @@ a {
   background: #f97316;
   color: #fff;
   font-weight: 700;
+  white-space: nowrap;
+}
+
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nav-link {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+  font-size: 0.88rem;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+}
+
+.nav-link.active {
+  border-color: rgba(15, 118, 110, 0.32);
+  color: #0f766e;
+}
+
+.header-search {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: min(100%, 420px);
+}
+
+.header-search input {
+  flex: 1;
+  min-height: 44px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.header-search button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  background: #0f766e;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .hero,
@@ -128,7 +197,7 @@ a {
 .stack {
   display: grid;
   gap: 18px;
-  padding: 18px 0 40px;
+  padding: 22px 0 40px;
 }
 
 .card {
@@ -173,8 +242,14 @@ a {
     align-items: flex-start;
   }
 
+  .header-search,
   .bonus-link {
     width: 100%;
+  }
+
+  .header-search {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .grid {
