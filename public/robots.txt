@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vermillion-macaron-756822.netlify.app/sitemap.xml
